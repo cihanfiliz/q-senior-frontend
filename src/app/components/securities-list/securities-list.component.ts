@@ -17,6 +17,7 @@ import { Security } from '../../models/security';
 import { SecurityService } from '../../services/security.service';
 import { FilterableTableComponent } from '../filterable-table/filterable-table.component';
 import { AsyncPipe } from '@angular/common';
+import { SecuritiesFilter } from '../../models/securities-filter';
 
 @Component({
   selector: 'securities-list',
@@ -49,4 +50,26 @@ export class SecuritiesListComponent {
   protected securities$: Observable<Security[]> = this._securityService
     .getSecurities({})
     .pipe(indicate(this.loadingSecurities$));
+
+  protected filterFields: {
+    key: string;
+    label: string;
+    type: 'text' | 'select' | 'boolean';
+    options?: string[];
+  }[] = [
+      { key: 'name', label: 'Name', type: 'text' },
+      { key: 'types', label: 'Type', type: 'select', options: ['Stock', 'Bond', 'Other'] },
+      { key: 'currencies', label: 'Currency', type: 'select', options: ['USD', 'EUR', 'TRY'] },
+      { key: 'isPrivate', label: 'Private Asset', type: 'boolean' },
+    ];
+
+
+  protected filters: SecuritiesFilter = {};
+
+  onFilterChange(newFilters: Record<string, any>) {
+    this.filters = { ...newFilters };
+    this.securities$ = this._securityService
+      .getSecurities(this.filters)
+      .pipe(indicate(this.loadingSecurities$));
+  }
 }

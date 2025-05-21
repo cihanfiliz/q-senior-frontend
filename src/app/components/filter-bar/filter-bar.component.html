@@ -1,0 +1,16 @@
+<form [formGroup]="form" class="filter-bar">
+  <ng-container *ngFor="let field of fields">
+    <ng-container [ngSwitch]="field.type">
+      <input *ngSwitchCase="'text'" [placeholder]="field.label" [formControlName]="field.key" type="text" />
+      
+      <select *ngSwitchCase="'select'" [formControlName]="field.key">
+        <option value="">All {{ field.label }}</option>
+        <option *ngFor="let option of field.options" [value]="option">{{ option }}</option>
+      </select>
+      
+      <label *ngSwitchCase="'boolean'">
+        <input type="checkbox" [formControlName]="field.key" /> {{ field.label }}
+      </label>
+    </ng-container>
+  </ng-container>
+</form>

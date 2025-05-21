@@ -2,6 +2,8 @@
   class="security-list"
   [dataSource]="securities$ | async"
   [isLoading]="loadingSecurities$ | async"
+  [filterFields]="filterFields"
+  (filterChange)="onFilterChange($event)"
 >
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>Name</th>

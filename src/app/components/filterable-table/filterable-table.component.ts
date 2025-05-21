@@ -5,6 +5,8 @@ import {
   ContentChild,
   ContentChildren,
   Input,
+  Output,
+  EventEmitter,
   QueryList,
   ViewChild,
 } from '@angular/core';
@@ -18,11 +20,12 @@ import {
 } from '@angular/material/table';
 import { DataSource } from '@angular/cdk/collections';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { FilterBarComponent } from '../filter-bar/filter-bar.component';
 
 @Component({
   selector: 'filterable-table',
   standalone: true,
-  imports: [MatProgressSpinner, MatTable],
+  imports: [MatProgressSpinner, MatTable, FilterBarComponent],
   templateUrl: './filterable-table.component.html',
   styleUrl: './filterable-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,6 +46,12 @@ export class FilterableTableComponent<T> implements AfterContentInit {
     | Observable<readonly T[]>
     | null = null;
   @Input() isLoading: boolean | null = false;
+  @Input() filterFields: { key: string; label: string; type: 'text' | 'select' | 'boolean'; options?: string[] }[] = [];
+  @Output() filterChange = new EventEmitter<Record<string, any>>();
+
+  onFilterChange(filters: Record<string, any>) {
+    this.filterChange.emit(filters);
+  }
 
   public ngAfterContentInit(): void {
     this.columnDefs?.forEach((columnDef) =>

@@ -1,14 +1,13 @@
-<!-- Feel free to replace this placeholder with your filterbar -->
-<fieldset class="filter-bar-placeholder">
-  <legend>Filter bar should go here</legend>
-</fieldset>
+<filter-bar
+  [fields]="filterFields"
+  (filterChange)="onFilterChange($event)"
+/>
 
 <div class="table-wrapper">
   @if(isLoading) {
   <div class="loading-indicator">
     <mat-spinner></mat-spinner>
   </div>
-
   }
 
   <table mat-table [dataSource]="dataSource ?? []" class="mat-elevation-z8">
