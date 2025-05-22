@@ -25,17 +25,27 @@ export class SecurityService {
   ): Security[] {
     if (!securityFilter) return SECURITIES;
 
-    return SECURITIES.filter(
-      (s) =>
-        (!securityFilter.name || s.name.includes(securityFilter.name)) &&
-        (!securityFilter.types ||
-          securityFilter.types.some((type) => s.type === type)) &&
-        (!securityFilter.currencies ||
-          securityFilter.currencies.some(
-            (currency) => s.currency == currency
-          )) &&
-        (securityFilter.isPrivate === undefined ||
-          securityFilter.isPrivate === s.isPrivate)
-    );
+    return SECURITIES.filter((s) => {
+      console.log('Filters:', securityFilter);
+      console.log('Available types in data:', [...new Set(SECURITIES.map(s => s.type))]);
+
+      const nameMatch =
+        !securityFilter.name ||
+        s.name.toLowerCase().includes(securityFilter.name.toLowerCase());
+
+      const typeMatch =
+        !Array.isArray(securityFilter.types) || securityFilter.types.length === 0 ||
+        securityFilter.types.includes(s.type);
+
+      const currencyMatch =
+        !Array.isArray(securityFilter.currencies) || securityFilter.currencies.length === 0 ||
+        securityFilter.currencies.includes(s.currency);
+
+      const isPrivateMatch =
+        securityFilter.isPrivate == null ||
+        s.isPrivate === securityFilter.isPrivate;
+
+      return nameMatch && typeMatch && currencyMatch && isPrivateMatch;
+    });
   }
 }

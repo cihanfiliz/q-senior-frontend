@@ -59,7 +59,7 @@ export class SecuritiesListComponent {
   }[] = [
       { key: 'name', label: 'Name', type: 'text' },
       { key: 'types', label: 'Type', type: 'select', options: ['Stock', 'Bond', 'Other'] },
-      { key: 'currencies', label: 'Currency', type: 'select', options: ['USD', 'EUR', 'TRY'] },
+      { key: 'currencies', label: 'Currency', type: 'select', options: ['USD', 'EUR', 'GBP'] },
       { key: 'isPrivate', label: 'Private Asset', type: 'boolean' },
     ];
 
