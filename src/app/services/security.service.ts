@@ -26,9 +26,6 @@ export class SecurityService {
     if (!securityFilter) return SECURITIES;
 
     return SECURITIES.filter((s) => {
-      console.log('Filters:', securityFilter);
-      console.log('Available types in data:', [...new Set(SECURITIES.map(s => s.type))]);
-
       const nameMatch =
         !securityFilter.name ||
         s.name.toLowerCase().includes(securityFilter.name.toLowerCase());

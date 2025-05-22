@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'filter-bar',
@@ -14,6 +15,7 @@ import { MatOptionModule } from '@angular/material/core';
     MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
+    MatInputModule,
   ],
   templateUrl: './filter-bar.component.html',
 })

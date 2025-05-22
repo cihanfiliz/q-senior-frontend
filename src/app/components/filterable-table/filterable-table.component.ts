@@ -21,11 +21,12 @@ import {
 import { DataSource } from '@angular/cdk/collections';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { FilterBarComponent } from '../filter-bar/filter-bar.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'filterable-table',
   standalone: true,
-  imports: [MatProgressSpinner, MatTable, FilterBarComponent],
+  imports: [MatProgressSpinner, MatTable, FilterBarComponent, CommonModule],
   templateUrl: './filterable-table.component.html',
   styleUrl: './filterable-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

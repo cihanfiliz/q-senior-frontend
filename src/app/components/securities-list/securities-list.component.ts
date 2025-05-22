@@ -42,34 +42,44 @@ import { SecuritiesFilter } from '../../models/securities-filter';
 })
 export class SecuritiesListComponent {
   protected displayedColumns: string[] = ['name', 'type', 'currency'];
-
-  private _securityService = inject(SecurityService);
-  protected loadingSecurities$: BehaviorSubject<boolean> =
-    new BehaviorSubject<boolean>(false);
-
-  protected securities$: Observable<Security[]> = this._securityService
-    .getSecurities({})
-    .pipe(indicate(this.loadingSecurities$));
-
   protected filterFields: {
     key: string;
     label: string;
     type: 'text' | 'select' | 'boolean';
     options?: string[];
-  }[] = [
-      { key: 'name', label: 'Name', type: 'text' },
-      { key: 'types', label: 'Type', type: 'select', options: ['Stock', 'Bond', 'Other'] },
-      { key: 'currencies', label: 'Currency', type: 'select', options: ['USD', 'EUR', 'GBP'] },
-      { key: 'isPrivate', label: 'Private Asset', type: 'boolean' },
-    ];
-
+  }[] = [];
 
   protected filters: SecuritiesFilter = {};
+  private _securityService = inject(SecurityService);
+  protected loadingSecurities$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  protected securities$: Observable<Security[]> =
+    this._securityService
+      .getSecurities(this.filters)
+      .pipe(indicate(this.loadingSecurities$));
 
-  onFilterChange(newFilters: Record<string, any>) {
+  constructor() {
+    this.securities$.subscribe((data) => {
+      const types = this.getUniqueValues(data, 'type');
+      const currencies = this.getUniqueValues(data, 'currency');
+
+      this.filterFields = [
+        { key: 'name', label: 'Name', type: 'text' },
+        { key: 'types', label: 'Type', type: 'select', options: types },
+        { key: 'currencies', label: 'Currency', type: 'select', options: currencies },
+        { key: 'isPrivate', label: 'Private/Public Asset', type: 'boolean' },
+      ];
+    });
+  }
+
+  protected onFilterChange(newFilters: Record<string, any>) {
     this.filters = { ...newFilters };
+
     this.securities$ = this._securityService
       .getSecurities(this.filters)
       .pipe(indicate(this.loadingSecurities$));
+  }
+
+  private getUniqueValues<T>(data: T[], key: keyof T): string[] {
+    return Array.from(new Set(data.map(item => item[key]).filter(Boolean))) as string[];
   }
 }
