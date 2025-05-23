@@ -22,11 +22,12 @@ import { DataSource } from '@angular/cdk/collections';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { FilterBarComponent } from '../filter-bar/filter-bar.component';
 import { CommonModule } from '@angular/common';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'filterable-table',
   standalone: true,
-  imports: [MatProgressSpinner, MatTable, FilterBarComponent, CommonModule],
+  imports: [MatProgressSpinner, MatTable, FilterBarComponent, CommonModule, MatPaginatorModule],
   templateUrl: './filterable-table.component.html',
   styleUrl: './filterable-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,9 +51,20 @@ export class FilterableTableComponent<T> implements AfterContentInit {
   @Input() filterFields: { key: string; label: string; type: 'text' | 'select' | 'boolean'; options?: string[] }[] = [];
   @Output() filterChange = new EventEmitter<Record<string, any>>();
 
+  @Input() totalItems: number = 0;
+  @Input() pageSize: number = 10;
+  @Output() pageChange = new EventEmitter<{ skip: number; limit: number }>();
+
   onFilterChange(filters: Record<string, any>) {
     this.filterChange.emit(filters);
   }
+
+  onPageChange(event: PageEvent) {
+    this.pageChange.emit({
+      skip: event.pageIndex * event.pageSize,
+      limit: event.pageSize
+    });
+  }  
 
   public ngAfterContentInit(): void {
     this.columnDefs?.forEach((columnDef) =>

@@ -3,7 +3,10 @@
   [dataSource]="securities$ | async"
   [isLoading]="loadingSecurities$ | async"
   [filterFields]="filterFields"
+  [totalItems]="totalItems"
+  [pageSize]="paging.limit ?? 10"
   (filterChange)="onFilterChange($event)"
+  (pageChange)="onPageChange($event)"
 >
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>Name</th>

@@ -17,7 +17,7 @@ import { Security } from '../../models/security';
 import { SecurityService } from '../../services/security.service';
 import { FilterableTableComponent } from '../filterable-table/filterable-table.component';
 import { AsyncPipe } from '@angular/common';
-import { SecuritiesFilter } from '../../models/securities-filter';
+import { PagingFilter, SecuritiesFilter } from '../../models/securities-filter';
 
 @Component({
   selector: 'securities-list',
@@ -49,18 +49,24 @@ export class SecuritiesListComponent {
     options?: string[];
   }[] = [];
 
+  protected totalItems: number = 0;
+  protected paging: PagingFilter = {
+    skip: 0,
+    limit: 10
+  };
+
   protected filters: SecuritiesFilter = {};
   private _securityService = inject(SecurityService);
   protected loadingSecurities$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  protected securities$: Observable<Security[]> =
-    this._securityService
-      .getSecurities(this.filters)
-      .pipe(indicate(this.loadingSecurities$));
+  protected securities$: Observable<Security[]> = new Observable<Security[]>();
 
   constructor() {
+    this.securities$ = this._securityService.getSecurities();
     this.securities$.subscribe((data) => {
       const types = this.getUniqueValues(data, 'type');
       const currencies = this.getUniqueValues(data, 'currency');
+
+      this.totalItems = this._securityService.getTotalCount();
 
       this.filterFields = [
         { key: 'name', label: 'Name', type: 'text' },
@@ -68,15 +74,31 @@ export class SecuritiesListComponent {
         { key: 'currencies', label: 'Currency', type: 'select', options: currencies },
         { key: 'isPrivate', label: 'Private/Public Asset', type: 'boolean' },
       ];
+
+      this.loadData();
     });
   }
 
   protected onFilterChange(newFilters: Record<string, any>) {
     this.filters = { ...newFilters };
+    this.loadData();
+  }
+
+  protected onPageChange(paging: PagingFilter) {
+    this.paging = paging;
+    this.loadData();
+  }
+
+  private loadData(): void {
+    const fullFilter = {
+      ...this.filters,
+      ...this.paging
+    };
 
     this.securities$ = this._securityService
-      .getSecurities(this.filters)
+      .getSecurities(fullFilter)
       .pipe(indicate(this.loadingSecurities$));
+    this.totalItems = this._securityService.getFilteredCount(fullFilter);
   }
 
   private getUniqueValues<T>(data: T[], key: keyof T): string[] {

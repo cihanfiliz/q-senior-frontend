@@ -12,12 +12,19 @@ export class SecurityService {
    * Get Securities server request mock
    * */
   getSecurities(securityFilter?: SecuritiesFilter): Observable<Security[]> {
-    const filteredSecurities = this._filterSecurities(securityFilter).slice(
-      securityFilter?.skip ?? 0,
-      securityFilter?.limit ?? 100
-    );
+    const start = securityFilter?.skip ?? 0;
+    const end = start + (securityFilter?.limit ?? 100);
+    const filteredSecurities = this._filterSecurities(securityFilter).slice(start, end);
 
     return of(filteredSecurities).pipe(delay(1000));
+  }
+
+  getTotalCount(): number {
+    return SECURITIES.length;
+  }
+
+  getFilteredCount(securityFilter?: SecuritiesFilter): number {
+    return this._filterSecurities(securityFilter).length;
   }
 
   private _filterSecurities(
