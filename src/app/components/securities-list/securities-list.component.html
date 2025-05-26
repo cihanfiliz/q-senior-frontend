@@ -7,6 +7,7 @@
   [pageSize]="paging.limit ?? 10"
   (filterChange)="onFilterChange($event)"
   (pageChange)="onPageChange($event)"
+  (paginatorReady)="onPaginatorReady($event)"
 >
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>Name</th>

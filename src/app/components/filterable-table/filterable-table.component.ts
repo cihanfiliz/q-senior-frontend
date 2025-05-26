@@ -40,6 +40,9 @@ export class FilterableTableComponent<T> implements AfterContentInit {
 
   @ViewChild(MatTable, { static: true }) table?: MatTable<T>;
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @Output() paginatorReady = new EventEmitter<MatPaginator>();
+
   @Input() columns: string[] = [];
 
   @Input() dataSource:
@@ -65,6 +68,10 @@ export class FilterableTableComponent<T> implements AfterContentInit {
       limit: event.pageSize
     });
   }  
+
+  public ngAfterViewInit() {
+    this.paginatorReady.emit(this.paginator);
+  }
 
   public ngAfterContentInit(): void {
     this.columnDefs?.forEach((columnDef) =>

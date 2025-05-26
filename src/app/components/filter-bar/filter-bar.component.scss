@@ -1,3 +1,16 @@
-:host {
-  display: block;
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  mat-form-field {
+    flex: 1 1 220px;
+    min-width: 200px;
+  }
+
+  mat-select,
+  input {
+    font-size: 14px;
+  }
 }

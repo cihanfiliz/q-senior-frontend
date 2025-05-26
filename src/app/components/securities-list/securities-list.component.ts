@@ -18,6 +18,7 @@ import { SecurityService } from '../../services/security.service';
 import { FilterableTableComponent } from '../filterable-table/filterable-table.component';
 import { AsyncPipe } from '@angular/common';
 import { PagingFilter, SecuritiesFilter } from '../../models/securities-filter';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'securities-list',
@@ -60,6 +61,8 @@ export class SecuritiesListComponent {
   protected loadingSecurities$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   protected securities$: Observable<Security[]> = new Observable<Security[]>();
 
+  protected paginatorRef!: MatPaginator;
+
   constructor() {
     this.securities$ = this._securityService.getSecurities();
     this.securities$.subscribe((data) => {
@@ -79,8 +82,16 @@ export class SecuritiesListComponent {
     });
   }
 
+  public onPaginatorReady(paginator: MatPaginator) {
+    this.paginatorRef = paginator;
+  }
+
   protected onFilterChange(newFilters: Record<string, any>) {
     this.filters = { ...newFilters };
+    this.paging.skip = 0;
+    if (this.paginatorRef) {
+      this.paginatorRef.firstPage();
+    }
     this.loadData();
   }
 

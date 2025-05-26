@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
     MatInputModule,
   ],
   templateUrl: './filter-bar.component.html',
+  styleUrl: './filter-bar.component.scss',
 })
 export class FilterBarComponent {
   @Input() fields: { key: string; label: string; type: 'text' | 'select' | 'boolean'; options?: string[] }[] = [];
